@@ -1,0 +1,92 @@
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+@keyframes blink {
+
+  50% {
+
+    opacity: 1;
+
+  }
+
+}
+
+
+.app{
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #011926;
+}
+
+.words-interface{
+  width: 700px;
+  padding: 10px;
+  
+}
+
+.result-details li {
+  list-style: none;
+  color: white;
+}
+
+.result-details{
+  display: flex;
+  gap: 20px;
+}
+
+.input-word-field{
+  opacity: 0;
+  z-index: -999;
+  position: absolute;
+}
+
+.typing-text p {
+
+  font-size: 21px;
+  text-align: justify;
+  letter-spacing: 1px;
+  word-break: break-all;
+
+}
+
+.typing-text span{
+  color: white;
+  font-size: 28px;
+  position: relative;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.typing-text span.active{
+  color: #00ff73;
+}
+
+.typing-text span.active::before{
+  position: absolute;
+  content: "";
+  height: 90%;
+  width: 1px;
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  border-radius: 5px;
+  background: #00ff73;
+  animation: blink 2s ease-in-out infinite;
+}
+
+.content-box .typing-text {
+  overflow: hidden;
+  max-height: 100px;
+}
+
+.typing-text::-webkit-scrollbar{
+  width: 0;
+}
