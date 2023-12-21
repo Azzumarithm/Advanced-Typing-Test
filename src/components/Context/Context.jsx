@@ -28,12 +28,14 @@ const Context = ({children}) => {
   const [charIndex, setCharIndex] = useState(0)
   const [mistakes, setMistakes] = useState(0);
   const [isTyping, setIsTyping] = useState(false)
+  const [inputVal, setInputVal] = useState('')
+  const [wordCount,setWordCount] = useState(0)
 
   
 
   return (
 
-      <GlobalContext.Provider value={{paragraphs,randIndex,timer,setTimer,maxTime,setMaxTimer,timeLeft,setTimeLeft,charIndex,setCharIndex,mistakes,setMistakes,isTyping,setIsTyping}}>
+      <GlobalContext.Provider value={{paragraphs,randIndex,timer,setTimer,maxTime,setMaxTimer,timeLeft,setTimeLeft,charIndex,setCharIndex,mistakes,setMistakes,isTyping,setIsTyping,inputVal, setInputVal,wordCount,setWordCount}}>
 
         {children}
 

@@ -1,13 +1,14 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import '../../App.css'
 import { useGlobalContext } from '../Context/Context'
+import { control } from 'leaflet'
 
 
 
 
 const WordsInterface = () => {
     useGlobalContext
-    const {paragraphs,randIndex,timer,setTimer,maxTime,setMaxTimer,timeLeft,setTimeLeft,charIndex,setCharIndex,mistakes,setMistakes,isTyping,setIsTyping,} = useGlobalContext()
+    const {paragraphs,randIndex,timer,setTimer,maxTime,setMaxTimer,timeLeft,setTimeLeft,charIndex,setCharIndex,mistakes,setMistakes,isTyping,setIsTyping,inputVal, setInputVal,wordCount,setWordCount} = useGlobalContext()
     
     
     //load paragraph
@@ -24,6 +25,10 @@ const WordsInterface = () => {
 
     
     // typing
+
+    // useEffect(() => {
+    //     console.log(inputVal)
+    // },[inputVal])
     
     let characters = paragraphs[randIndex]
     let charactersLength = characters.length
@@ -39,6 +44,13 @@ const WordsInterface = () => {
         inputValue = e.target.value
         typedChar = inputValue.split("")[charIndex]
         
+        setInputVal(prevInputVal => {
+
+            console.log(prevInputVal)
+
+            return inputValue
+        })
+        
         const previousSpan = spanContainerRef.current.children[charIndex]
         
         if (charIndex < charactersLength - 1 && timeLeft > 0) {
@@ -48,6 +60,7 @@ const WordsInterface = () => {
             
             if (typedChar == null || typedChar == undefined) {
                 if (charIndex > 0) {
+
                     setCharIndex(preCharIndex => preCharIndex - 1)
                     
                     if (previousSpan.classList.contains('incorrect')) {
@@ -72,7 +85,21 @@ const WordsInterface = () => {
                 setCharIndex(preCharIndex => preCharIndex + 1)
             }
         }
-        console.log(characters[charIndex] == typedChar, characters[charIndex], { typedChar })
+        // console.log(characters[charIndex] == typedChar, characters[charIndex], { typedChar })
+    }
+
+
+    const handleShortcuts = (e) => {
+        const isCtrlKey = e.ctrlKey
+        const backSpace = e.key === 'Backspace'
+        const lastWord = inputVal.split(" ").pop()
+        const lastWordLength = lastWord.length
+        
+        
+        if (isCtrlKey && backSpace){
+            setCharIndex(preCharIndex => preCharIndex - lastWordLength)
+        }
+
     }
 
 
@@ -80,7 +107,7 @@ const WordsInterface = () => {
     return (
         <>
             <div className={`words-interface`}>
-                <input type="text" className={`input-word-field`} ref={inputFieldRef} onChange={handleTypingText} />
+                <input type="text" className={`input-word-field`} ref={inputFieldRef} onChange={handleTypingText} onKeyDown={handleShortcuts}/>
                 <div className={`content-box`}>
                     <div className="content">
                         <ul className={`result-details`}>
@@ -97,13 +124,7 @@ const WordsInterface = () => {
                             {paragraphs[randIndex].split("").map((char, index) => (
                                 <span
                                     key={index}
-                                    className={`${index === charIndex ? 'active' : ''} ${updateValidity
-                                            ? characters[charIndex] === typedChar
-                                                ? 'correct'
-                                                : 'incorrect'
-                                            : ''
-                                        }`}
-                                >
+                                    className={`${index === charIndex ? 'active' : ''}`}>
                                     {char}
                                 </span>
                             ))}
