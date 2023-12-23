@@ -65,8 +65,20 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.typing-text span.active{
+.typing-text span.correct{
   color: #00ff73;
+}
+.typing-text span.incorrect{
+  color: #f85454;
+}
+
+.typing-text span.incorrect::before{
+  background: #f85454;
+  position: absolute;
+  content: "";
+  width: 90%;
+  height: 1px;
+  bottom: 0;
 }
 
 .typing-text span.active::before{
