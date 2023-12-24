@@ -30,7 +30,6 @@
 .words-interface{
   width: 700px;
   padding: 10px;
-  
 }
 
 .result-details li {
@@ -50,17 +49,22 @@
 }
 
 .typing-text p {
-
   font-size: 21px;
   text-align: justify;
   letter-spacing: 1px;
   word-break: break-all;
+}
 
+.typing-text {
+  background-color: transparent; 
+  
 }
 
 .typing-text span{
   color: white;
   font-size: 28px;
+  width: 0px;
+  height: 0px;
   position: relative;
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -94,11 +98,24 @@
   animation: blink 2s ease-in-out infinite;
 }
 
+.content-box {
+  position: relative;
+}
+
 .content-box .typing-text {
-  overflow: hidden;
-  max-height: 100px;
+  overflow: scroll;
+  height: 106px;
 }
 
 .typing-text::-webkit-scrollbar{
   width: 0;
+}
+
+.overlap-active-box{
+  height: 35px;
+  width: 15px;
+  position:absolute;
+  background: transparentxxx;
+  bottom: 0;
+  
 }

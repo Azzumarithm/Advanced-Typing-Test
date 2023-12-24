@@ -7,64 +7,79 @@ import { useGlobalContext } from '../Context/Context'
 
 const WordsInterface = () => {
     useGlobalContext
-    const {paragraphs,randIndex,timer,setTimer,maxTime,setMaxTimer,timeLeft,setTimeLeft,charIndex,setCharIndex,mistakes,setMistakes,isTyping,setIsTyping,inputVal, setInputVal,validIndex,setValidIndex} = useGlobalContext()
+    const { paragraphs, randIndex, timer, setTimer, maxTime, setMaxTimer, timeLeft, setTimeLeft, charIndex, setCharIndex, mistakes, setMistakes, isTyping, setIsTyping, inputVal, setInputVal, validIndex, setValidIndex } = useGlobalContext()
+
+
     
-    
-    //load paragraph
     const inputFieldRef = useRef(null)
-    
+    const typingTextBoxRef = useRef(null)
+    const overlapBoxDetectorRef = useRef(null)
+
     useEffect(() => {
         inputFieldRef.current.focus();
     }, []);
+
+
 
     const handleTypingTextClick = (e) => {
         inputFieldRef.current.focus()
     }
 
-    
-    
     // typing
-
-    // useEffect(() => {
-    //     console.log(inputVal)
-    // },[inputVal])
-    
     let characters = paragraphs[randIndex]
     let charactersLength = characters.length
     let inputValue = ''
     let typedChar = characters[charIndex]
 
+    
     const spanContainerRef = useRef(null)
+    const aSpan = spanContainerRef?.current?.children?.[charIndex]
+    
+    const unitHeight = Math.round(spanContainerRef?.current?.children?.[0].getBoundingClientRect().height + 1)
+
+    console.log(unitHeight)
+
+    const [scrollDistance, setScrollDistance] = useState(0)
+    let verticalCharCount = 0
+
+    useEffect(() => {
+        console.log(scrollDistance)
+    },[scrollDistance])
+
+    for (let i = 0; i < charactersLength; i++){
+        const aSpanX = spanContainerRef?.current?.children?.[0].getBoundingClientRect().x
+
+        if (aSpanX === spanContainerRef?.current?.children?.[i].getBoundingClientRect().x){
+            verticalCharCount++
+        }
+    }
     
 
-    
 
     const handleTypingText = (e) => {
         inputValue = e.target.value
         typedChar = inputValue.split("")[charIndex]
-        
-        
-        setInputVal(prevInputVal => {
 
-            console.log(prevInputVal)
+
+        setInputVal(prevInputVal => {
 
             return inputValue
         })
-        
-        
-        
+
+
+
         if (charIndex < charactersLength - 1 && timeLeft > 0) {
             if (!isTyping) {
                 setIsTyping(true)
             }
 
 
-            if (typedChar === null || typedChar === undefined){
+            if (typedChar === null || typedChar === undefined) {
                 if (charIndex > 0) {
 
                     setCharIndex(preCharIndex => preCharIndex - 1)
 
-                    if (mistakes !== 0){
+                    if (mistakes !== 0) {
                         setMistakes(prevState => prevState - 1)
                     }
 
@@ -74,30 +89,58 @@ const WordsInterface = () => {
                         newValidIndex.pop()
                         return newValidIndex
                     })
-                    
+
                 }
             }
             else {
-                
-                
+                const overlapBoxDetector = overlapBoxDetectorRef.current.getBoundingClientRect()
+                const spanContainer = aSpan?.getBoundingClientRect()
+
+                if ((Boolean(overlapBoxDetectorRef.current &&
+                    spanContainerRef.current) && (overlapBoxDetector.right > spanContainer?.left &&
+                        overlapBoxDetector.left < spanContainer?.right &&
+                        overlapBoxDetector.bottom > spanContainer?.top &&
+                        overlapBoxDetector.top < spanContainer?.bottom))
+                ) {
+                    console.log(spanContainerRef.current.scrollHeight)
+                    setScrollDistance(prevState => {
+                        const newScrollDistance = prevState + (spanContainerRef.current.scrollHeight / 3) - (2 * unitHeight);
+                        typingTextBoxRef.current.scrollTo({
+                            top: newScrollDistance,
+                            behavior: 'smooth',
+                          });
+                        return newScrollDistance;
+                    });
+
+                } else {
+                    
+
+                    console.log('Divs are not overlapping.');
+                }
+
+
+
+
+
                 setValidIndex((prevState) => {
                     return [...prevState, typedChar === characters[charIndex] ? `correct` : `incorrect`]
                 })
-                
-                
-                if (typedChar !== characters[charIndex] && charIndex > 0){
+
+
+                if (typedChar !== characters[charIndex] && charIndex > 0) {
                     setMistakes(prevState => prevState + 1)
-                    
-                }  
-                
+
+                }
+
                 setCharIndex(preCharIndex => preCharIndex + 1)
 
             }
 
 
-            
+
         }
-        // console.log(characters[charIndex] == typedChar, characters[charIndex], { typedChar })
+        
+        
     }
 
 
@@ -106,21 +149,21 @@ const WordsInterface = () => {
         const backSpace = e.key === 'Backspace'
         const lastWord = inputVal.split(" ").pop()
         const lastWordLength = lastWord.length
-        
+
         const previousSpan = spanContainerRef.current.children[charIndex]
-        
-        if (isCtrlKey && backSpace){
+
+        if (isCtrlKey && backSpace) {
             setCharIndex(preCharIndex => preCharIndex - lastWordLength)
         }
 
     }
 
-    
+
 
     return (
         <>
             <div className={`words-interface`}>
-                <input type="text" className={`input-word-field`} ref={inputFieldRef} onChange={handleTypingText} onKeyDown={handleDeletion}/>
+                <input type="text" className={`input-word-field`} ref={inputFieldRef} onChange={handleTypingText} onKeyDown={handleDeletion} />
                 <div className={`content-box`}>
                     <div className="content">
                         <ul className={`result-details`}>
@@ -132,7 +175,8 @@ const WordsInterface = () => {
                             </li>
                         </ul>
                     </div>
-                    <div className={`typing-text`} onClick={handleTypingTextClick}>
+                    <div className={`overlap-active-box`} ref={overlapBoxDetectorRef}></div>
+                    <div className={`typing-text`} onClick={handleTypingTextClick} ref={typingTextBoxRef}>
                         <p ref={spanContainerRef}>
                             {paragraphs[randIndex].split("").map((char, index) => (
                                 <span
