@@ -31,30 +31,19 @@ const WordsInterface = () => {
     let inputValue = ''
     let typedChar = characters[charIndex]
 
+    console.log(charIndex)
+    console.log(charactersLength)
     
     const spanContainerRef = useRef(null)
     const aSpan = spanContainerRef?.current?.children?.[charIndex]
     
     const unitHeight = Math.round(spanContainerRef?.current?.children?.[0].getBoundingClientRect().height + 1)
 
-    console.log(unitHeight)
-
     const [scrollDistance, setScrollDistance] = useState(0)
-    let verticalCharCount = 0
 
     useEffect(() => {
-        console.log(scrollDistance)
+        
     },[scrollDistance])
-
-    for (let i = 0; i < charactersLength; i++){
-        const aSpanX = spanContainerRef?.current?.children?.[0].getBoundingClientRect().x
-
-        if (aSpanX === spanContainerRef?.current?.children?.[i].getBoundingClientRect().x){
-            verticalCharCount++
-        }
-    }
-    
-
 
     const handleTypingText = (e) => {
         inputValue = e.target.value
@@ -62,13 +51,12 @@ const WordsInterface = () => {
 
 
         setInputVal(prevInputVal => {
-
             return inputValue
         })
 
 
 
-        if (charIndex < charactersLength - 1 && timeLeft > 0) {
+        if (charIndex < charactersLength && timeLeft > 0) {
             if (!isTyping) {
                 setIsTyping(true)
             }
@@ -102,7 +90,7 @@ const WordsInterface = () => {
                         overlapBoxDetector.bottom > spanContainer?.top &&
                         overlapBoxDetector.top < spanContainer?.bottom))
                 ) {
-                    console.log(spanContainerRef.current.scrollHeight)
+                    
                     setScrollDistance(prevState => {
                         const newScrollDistance = prevState + (spanContainerRef.current.scrollHeight / 3) - (2 * unitHeight);
                         typingTextBoxRef.current.scrollTo({
@@ -112,15 +100,7 @@ const WordsInterface = () => {
                         return newScrollDistance;
                     });
 
-                } else {
-                    
-
-                    console.log('Divs are not overlapping.');
-                }
-
-
-
-
+                } 
 
                 setValidIndex((prevState) => {
                     return [...prevState, typedChar === characters[charIndex] ? `correct` : `incorrect`]
