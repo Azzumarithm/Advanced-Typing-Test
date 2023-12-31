@@ -3,21 +3,14 @@ import '../../App.css'
 import { useGlobalContext } from '../Context/Context'
 
 
-
-
 const WordsInterface = () => {
     
     const { paragraphs, randIndex, timer, setTimer, maxTime, setMaxTimer, timeLeft, setTimeLeft, charIndex, setCharIndex, mistakes, setMistakes, isTyping, setIsTyping, inputVal, setInputVal, validIndex, setValidIndex } = useGlobalContext()
 
-
-    
     const inputFieldRef = useRef(null)
     const typingTextBoxRef = useRef(null)
     const overlapBoxDetectorRef = useRef(null)
 
-    
-    
-    
     const handleTypingTextClick = (e) => {
         inputFieldRef.current.focus()
     }
@@ -27,20 +20,16 @@ const WordsInterface = () => {
     let charactersLength = characters.length
     let inputValue = ''
     let typedChar = characters[charIndex]
-    let charactersArray = characters.split("").join("")
-    const lastWordArray = charactersArray.split(""); 
-
-    console.log(lastWordArray.slice(0, charIndex).join("").split(" "))
     
-    const [wordStack,setWordStack] = useState('')
-    const [lastWord,setLastWord] = useState('')
+    let charArray = inputVal.split("").slice(0, charIndex).join("").split(" ")
+    let lastWord = charArray[charArray.length - 1]
+    
 
     const [ctrlPressed,setCtrlPressed] = useState(false)
     const [ctrlTimer, setCtrlTimer] = useState(null)
     const [ctrlCount, setCtrlCount] = useState(0)
+   
  
-    
-    
     useEffect(() => {
         inputFieldRef.current.focus();
         // console.log(charactersArray)
@@ -48,14 +37,12 @@ const WordsInterface = () => {
     }, []);
     
     useEffect(() => {
-        console.log(wordStack[wordStack?.length - 1]);
+        console.log({charArray});
+        console.log({lastWord})
         
-    }, [wordStack]);
+    }, [inputVal]);
     
-    useEffect(() => {
-        console.log(lastWord);
-    }, [lastWord]);
-
+    
     
     const spanContainerRef = useRef(null)
     const aSpan = spanContainerRef?.current?.children?.[charIndex]
@@ -73,9 +60,7 @@ const WordsInterface = () => {
         typedChar = inputValue.split("")[charIndex]
         
         
-        setInputVal(prevInputVal => {
-            return inputValue
-        })
+        setInputVal(inputValue)
         
         
         if (charIndex < charactersLength && timeLeft > 0) {
@@ -144,7 +129,6 @@ const WordsInterface = () => {
           
     }
     
-
     const handleSpecialKeyForTypingText = (e) => {
         const isCtrlKey = e.ctrlKey;
         const isSpace = e.key === ' ';
@@ -154,29 +138,29 @@ const WordsInterface = () => {
             setCtrlTimer(setTimeout(() => {
                 setCtrlPressed(true);
                 setCtrlCount((prevState) => prevState + 1);
-            }, 50));
+            }, 70));
         }
     
-        setWordStack((prevState) => {
-            const newWordStack = [...lastWordArray.slice(0, charIndex).join("").split(" ")];
-    
-            if (isSpace) {
-                newWordStack.pop();
-            }
-    
-            return newWordStack;
-        });
-    
-        
-        const lastWordLength = wordStack[wordStack?.length - 1]?.length;
-        console.log(lastWordLength)
-    
+        let lastWordLength
+
+        if (lastWord === ''){
+            console.log(1)
+            lastWordLength = charArray[charArray?.length - 2]?.length 
+        }
+        else {
+            console.log(2)
+            lastWordLength = lastWord?.length - 1
+        }
+
+
         if ((isCtrlKey && backSpace) || (ctrlPressed && ctrlCount === 1)) {
+            
+            
             setCharIndex((preCharIndex) => preCharIndex - lastWordLength);
+            
             if (mistakes > 0) {
                 setMistakes((prevState) => prevState - lastWordLength);
             }
-    
             setValidIndex((prevState) => {
                 const newValidIndex = [...prevState];
                 for (let i = 0; i < lastWordLength; i++) {
@@ -185,11 +169,6 @@ const WordsInterface = () => {
                 return newValidIndex;
             });
     
-            setWordStack((prevState) => {
-                const newWordStack = [...prevState];
-                newWordStack.pop();
-                return newWordStack;
-            });
     
             setCtrlCount(0);
         }
@@ -201,6 +180,7 @@ const WordsInterface = () => {
             setCtrlPressed(false);
 
             clearTimeout(ctrlTimer);
+            setCtrlTimer(0)
         }
     };
 
@@ -208,10 +188,9 @@ const WordsInterface = () => {
         // Cleanup the timer when the component is unmounted
         return () => {
             clearTimeout(ctrlTimer);
+            
         };
     }, [ctrlTimer]);
-
-
 
 
     return (
