@@ -57,6 +57,7 @@
 
 .typing-text {
   background-color: transparent; 
+  /* padding: 0px 0px 0px 10px;x */
   
 }
 
@@ -64,7 +65,7 @@
   color: white;
   font-size: 28px;
   width: 0px;
-  height: 0px;
+  height: px;
   position: relative;
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -89,13 +90,14 @@
   position: absolute;
   content: "";
   height: 90%;
-  width: 1px;
+  width: 2px;
   bottom: 0;
   left: 0;
   opacity: 0;
   border-radius: 5px;
   background: #00ff73;
   animation: blink 2s ease-in-out infinite;
+  
 }
 
 .content-box {
@@ -115,7 +117,26 @@
   height: 35px;
   width: 15px;
   position:absolute;
-  background: transparentxxx;
+  background: transparent;
   bottom: 0;
   
 }
+
+.result-details span {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 20px;
+}
+
+.reload {
+  display: flex;
+  justify-content: center;
+}
+
+.reload-icon{
+  cursor: pointer;
+}
+
+.reload-icon:hover{
+  fill: #00ff73;
+}
+
