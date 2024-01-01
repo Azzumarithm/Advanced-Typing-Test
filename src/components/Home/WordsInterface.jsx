@@ -54,6 +54,9 @@ const WordsInterface = () => {
     useEffect(() => {
         
     },[scrollDistance])
+
+
+    
     
     const handleTypingText = (e) => {
         inputValue = e.target.value
@@ -62,14 +65,23 @@ const WordsInterface = () => {
         
         setInputVal(inputValue)
         
-        
+
         if (charIndex < charactersLength && timeLeft > 0) {
             if (!isTyping) {
                 setIsTyping(true)
+
+                const intervalId = setInterval(() => {
+                    setTimeLeft((prevState) => {
+                        if (prevState > 0) {
+                            return prevState - 1;
+                        } else {
+                            clearInterval(intervalId); 
+                            return prevState;
+                        }
+                    });
+                }, 1000);
             }
-            
-            
-            
+
             if (typedChar === null || typedChar === undefined) {
                 if (charIndex > 0) {
                     
@@ -193,6 +205,12 @@ const WordsInterface = () => {
     }, [ctrlTimer]);
 
 
+    // setInterval(setTimeLeft((prevState) => {
+    //     return prevState - 1
+    // }), 1000)
+
+
+
     return (
         <>
             <div className={`words-interface`}>
@@ -201,7 +219,7 @@ const WordsInterface = () => {
                     <div className="content">
                         <ul className={`result-details`}>
                             <li className={`time`}>
-                                <span><b>60</b></span>
+                                <span><b>{timeLeft}</b></span>
                             </li>
                             <li className={`wpm`}>
                                 <span><b>0</b></span>
