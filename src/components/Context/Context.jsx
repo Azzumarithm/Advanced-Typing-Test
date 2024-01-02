@@ -23,6 +23,7 @@ const Context = ({children}) => {
   const [timer,setTimer] = useState()
   const [maxTime,setMaxTimer] = useState(60)
   const [timeLeft,setTimeLeft] = useState(maxTime)
+  const [wpm, setWpm] = useState(0)
   const [charIndex, setCharIndex] = useState(0)
   const [mistakes, setMistakes] = useState(0);
   const [isTyping, setIsTyping] = useState(false)
@@ -34,7 +35,7 @@ const Context = ({children}) => {
 
   return (
 
-      <GlobalContext.Provider value={{paragraphs,randIndex,timer,setTimer,maxTime,setMaxTimer,timeLeft,setTimeLeft,charIndex,setCharIndex,mistakes,setMistakes,isTyping,setIsTyping,inputVal, setInputVal,validIndex,setValidIndex}}>
+      <GlobalContext.Provider value={{paragraphs,randIndex,timer,setTimer,maxTime,setMaxTimer,timeLeft,setTimeLeft,charIndex,setCharIndex,mistakes,setMistakes,isTyping,setIsTyping,inputVal, setInputVal,validIndex,setValidIndex,wpm, setWpm}}>
 
         {children}
 

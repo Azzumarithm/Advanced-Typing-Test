@@ -5,7 +5,7 @@ import reload from '../../assets/images/reload.svg'
 
 const WordsInterface = () => {
     
-    const { paragraphs, randIndex, timer, setTimer, maxTime, setMaxTimer, timeLeft, setTimeLeft, charIndex, setCharIndex, mistakes, setMistakes, isTyping, setIsTyping, inputVal, setInputVal, validIndex, setValidIndex } = useGlobalContext()
+    const { paragraphs, randIndex, timer, setTimer, maxTime, setMaxTimer, timeLeft, setTimeLeft, charIndex, setCharIndex, mistakes, setMistakes, isTyping, setIsTyping, inputVal, setInputVal, validIndex, setValidIndex,wpm, setWpm } = useGlobalContext()
 
     const inputFieldRef = useRef(null)
     const typingTextBoxRef = useRef(null)
@@ -56,6 +56,11 @@ const WordsInterface = () => {
     },[scrollDistance])
 
 
+    useEffect(() => {
+
+        setWpm(Math.round(((charIndex - mistakes)  / 5) / (maxTime - timeLeft) * 60) || 0)
+
+    },[timeLeft])
     
     
     const handleTypingText = (e) => {
@@ -222,7 +227,7 @@ const WordsInterface = () => {
                                 <span><b>{timeLeft}</b></span>
                             </li>
                             <li className={`wpm`}>
-                                <span><b>0</b></span>
+                                <span><b>{wpm}</b></span>
                             </li>
                         </ul>
                     </div>
