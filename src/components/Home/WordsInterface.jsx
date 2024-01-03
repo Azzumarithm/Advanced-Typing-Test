@@ -28,6 +28,8 @@ const WordsInterface = () => {
     const [ctrlPressed,setCtrlPressed] = useState(false)
     const [ctrlTimer, setCtrlTimer] = useState(null)
     const [ctrlCount, setCtrlCount] = useState(0)
+    const [testTimer, setTestTimer] = useState(null);
+
    
  
     useEffect(() => {
@@ -75,16 +77,22 @@ const WordsInterface = () => {
             if (!isTyping) {
                 setIsTyping(true)
 
-                const intervalId = setInterval(() => {
+
+                const newIntervalId = setInterval(() => {
                     setTimeLeft((prevState) => {
+                        console.log("ss")
                         if (prevState > 0) {
+
                             return prevState - 1;
                         } else {
-                            clearInterval(intervalId); 
+                            clearInterval(newIntervalId); 
                             return prevState;
                         }
+
                     });
                 }, 1000);
+
+                setTestTimer(newIntervalId);
             }
 
             if (typedChar === null || typedChar === undefined) {
@@ -214,6 +222,18 @@ const WordsInterface = () => {
     //     return prevState - 1
     // }), 1000)
 
+    const handleResetTypingTest = (e) => {
+        setCharIndex(0)
+        setValidIndex([])
+        setMistakes(0)
+        setInputVal('')
+        setIsTyping(false)
+        setTimeLeft(maxTime)
+        
+
+        clearInterval(testTimer)
+        setTestTimer(null)
+    }
 
 
     return (
@@ -244,7 +264,7 @@ const WordsInterface = () => {
                         </p>
                     </div>
                     <div className={`reload`}>
-                        <svg fill="#ffffff" width="20px" height="20px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" className={`reload-icon`}>
+                        <svg fill="#ffffff" width="20px" height="20px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" className={`reload-icon`} onClick={handleResetTypingTest}>
                             <title>reload</title>
                             <path d="M0 16q0-2.784 1.088-5.312t2.912-4.384 4.384-2.912 5.344-1.088q2.784 0 5.312 1.088t4.384 2.912 2.912 4.384 1.088 5.312h2.304q0.736 0 1.28 0.416t0.8 1.024 0.16 1.28-0.64 1.184l-4.576 4.576q-0.672 0.672-1.6 0.672t-1.632-0.672l-4.576-4.576q-0.512-0.512-0.608-1.184t0.128-1.28 0.8-1.024 1.312-0.416h2.272q0-2.464-1.216-4.576t-3.328-3.328-4.576-1.216-4.608 1.216-3.328 3.328-1.216 4.576 1.216 4.608 3.328 3.328 4.608 1.216q1.728 0 3.36-0.64l3.424 3.392q-3.136 1.824-6.784 1.824-2.816 0-5.344-1.088t-4.384-2.912-2.912-4.384-1.088-5.344z"></path>
                         </svg>
