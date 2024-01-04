@@ -80,7 +80,6 @@ const WordsInterface = () => {
 
                 const newIntervalId = setInterval(() => {
                     setTimeLeft((prevState) => {
-                        console.log("ss")
                         if (prevState > 0) {
 
                             return prevState - 1;
@@ -158,6 +157,8 @@ const WordsInterface = () => {
         const isCtrlKey = e.ctrlKey;
         const isSpace = e.key === ' ';
         const backSpace = e.key === 'Backspace';
+        const isEnter = e.key === 'Enter'
+        const isShift = e.shiftKey
     
         if (isCtrlKey) {
             setCtrlTimer(setTimeout(() => {
@@ -196,6 +197,20 @@ const WordsInterface = () => {
     
     
             setCtrlCount(0);
+        }
+
+       
+        if ((isShift || isEnter)){
+            setCharIndex(0)
+            setValidIndex([])
+            setMistakes(0)
+            setInputVal('')
+            setIsTyping(false)
+            setTimeLeft(maxTime)
+            
+
+            clearInterval(testTimer)
+            setTestTimer(null)
         }
     };
     
