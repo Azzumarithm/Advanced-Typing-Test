@@ -21,8 +21,9 @@ const WordsInterface = () => {
     let inputValue = ''
     let typedChar = characters[charIndex]
     
-    let charArray = inputVal.split("").slice(0, charIndex).join("").split(" ")
-    let lastWord = charArray[charArray.length - 1]
+    
+    let charArray = inputVal.substring(0, charIndex).split(/(\s+|,\s*|\.\s*)/).filter(Boolean);
+    let lastWord = charArray[charArray.length - 1];
     
 
     const [ctrlPressed,setCtrlPressed] = useState(false)
@@ -30,17 +31,17 @@ const WordsInterface = () => {
     const [ctrlCount, setCtrlCount] = useState(0)
     const [testTimer, setTestTimer] = useState(null);
 
-   
- 
     useEffect(() => {
         inputFieldRef.current.focus();
         // console.log(charactersArray)
-        
     }, []);
     
     useEffect(() => {
         console.log({charArray});
         console.log({lastWord})
+        // console.log(sliceChars[charIndex])
+        console.log(lastWord?.length)
+        console.log(typedChar)
         
     }, [inputVal]);
     
@@ -59,9 +60,7 @@ const WordsInterface = () => {
 
 
     useEffect(() => {
-
         setWpm(Math.round(((charIndex - mistakes)  / 5) / (maxTime - timeLeft) * 60) || 0)
-
     },[timeLeft])
     
     
@@ -159,6 +158,8 @@ const WordsInterface = () => {
         const backSpace = e.key === 'Backspace';
         const isEnter = e.key === 'Enter'
         const isShift = e.shiftKey
+
+        setInputVal(e.target.value)
     
         if (isCtrlKey) {
             setCtrlTimer(setTimeout(() => {
@@ -167,20 +168,21 @@ const WordsInterface = () => {
             }, 70));
         }
     
-        let lastWordLength
+        let lastWordLength = lastWord?.length - 1
 
-        if (lastWord === ''){
-            console.log(1)
-            lastWordLength = charArray[charArray?.length - 2]?.length 
-        }
-        else {
-            console.log(2)
-            lastWordLength = lastWord?.length - 1
-        }
-
-
+        // if (lastWord === ""){
+        //     console.log(1)
+        //     lastWordLength = charArray[charArray?.length - 2]?.length
+        // }
+        // else {
+        //     console.log(2)
+        //     lastWordLength = lastWord?.length - 1
+        
+        // }
+        
         if ((isCtrlKey && backSpace) || (ctrlPressed && ctrlCount === 1)) {
             
+            console.log(isCtrlKey && backSpace)
             
             setCharIndex((preCharIndex) => preCharIndex - lastWordLength);
             
@@ -194,8 +196,7 @@ const WordsInterface = () => {
                 }
                 return newValidIndex;
             });
-    
-    
+
             setCtrlCount(0);
         }
 
@@ -233,10 +234,6 @@ const WordsInterface = () => {
     }, [ctrlTimer]);
 
 
-    // setInterval(setTimeLeft((prevState) => {
-    //     return prevState - 1
-    // }), 1000)
-
     const handleResetTypingTest = (e) => {
         setCharIndex(0)
         setValidIndex([])
@@ -244,8 +241,6 @@ const WordsInterface = () => {
         setInputVal('')
         setIsTyping(false)
         setTimeLeft(maxTime)
-        
-
         clearInterval(testTimer)
         setTestTimer(null)
     }
@@ -254,7 +249,7 @@ const WordsInterface = () => {
     return (
         <>
             <div className={`words-interface`}>
-                <input type="text" className={`input-word-field`} ref={inputFieldRef} onChange={handleTypingText} onKeyDown={handleSpecialKeyForTypingText} onKeyUp={handleKeyUp}/>
+                <input type="text" className={`input-word-field`} ref={inputFieldRef} onChange={handleTypingText} onKeyDown={handleSpecialKeyForTypingText} onKeyUp={handleKeyUp} />
                 <div className={`content-box`}>
                     <div className="content">
                         <ul className={`result-details`}>
