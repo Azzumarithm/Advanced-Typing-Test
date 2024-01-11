@@ -20,16 +20,18 @@ const WordsInterface = () => {
     let charactersLength = characters.length
     let inputValue = ''
     let typedChar = characters[charIndex]
+
+    let charArray = inputVal.split(/(\s+|,\s*|\.\s*)/).filter(s => s != " ").filter(s => s != '')
     
-    
-    let charArray = inputVal.substring(0, charIndex).split(/(\s+|,\s*|\.\s*)/).filter(Boolean);
     let lastWord = charArray[charArray.length - 1];
+    
     
 
     const [ctrlPressed,setCtrlPressed] = useState(false)
     const [ctrlTimer, setCtrlTimer] = useState(null)
     const [ctrlCount, setCtrlCount] = useState(0)
     const [testTimer, setTestTimer] = useState(null);
+    const [commaPeriodIndex, setCommaPeriodIndex] = useState(0)
 
     useEffect(() => {
         inputFieldRef.current.focus();
@@ -37,12 +39,21 @@ const WordsInterface = () => {
     }, []);
     
     useEffect(() => {
+        
+        if (lastWord === '.' || lastWord === ","){
+            setCommaPeriodIndex(charArray.length)
+        }
+        
+        if (commaPeriodIndex - charArray.length == 2){
+            charArray[charArray.length - 1] = charArray[charArray.length - 1] + " "
+            lastWord = charArray[charArray.length - 1]
+        }
+
         console.log({charArray});
         console.log({lastWord})
-        // console.log(sliceChars[charIndex])
         console.log(lastWord?.length)
         console.log(typedChar)
-        
+
     }, [inputVal]);
     
     
@@ -162,33 +173,39 @@ const WordsInterface = () => {
         setInputVal(e.target.value)
     
         if (isCtrlKey) {
-            setCtrlTimer(setTimeout(() => {
-                setCtrlPressed(true);
-                setCtrlCount((prevState) => prevState + 1);
-            }, 70));
+
+            if (ctrlTimer < 70 && charIndex > 0){
+                setCtrlTimer(setTimeout(() => {
+                    setCtrlPressed(true);
+                    // setCtrlCount((prevState) => prevState + 1);
+                }, 70));
+            }
         }
     
-        let lastWordLength = lastWord?.length - 1
+        let lastWordLength 
 
-        // if (lastWord === ""){
-        //     console.log(1)
-        //     lastWordLength = charArray[charArray?.length - 2]?.length
-        // }
-        // else {
-        //     console.log(2)
-        //     lastWordLength = lastWord?.length - 1
+        if (commaPeriodIndex - charArray.length == 2){
+            lastWordLength = lastWord?.length
+        }
+        else {
+            lastWordLength = lastWord?.length - 1
+
+        }
+
         
-        // }
-        
-        if ((isCtrlKey && backSpace) || (ctrlPressed && ctrlCount === 1)) {
+        if ((isCtrlKey && backSpace)) {
             
             console.log(isCtrlKey && backSpace)
+
+            
+
             
             setCharIndex((preCharIndex) => preCharIndex - lastWordLength);
             
             if (mistakes > 0) {
                 setMistakes((prevState) => prevState - lastWordLength);
             }
+
             setValidIndex((prevState) => {
                 const newValidIndex = [...prevState];
                 for (let i = 0; i < lastWordLength; i++) {
@@ -197,7 +214,7 @@ const WordsInterface = () => {
                 return newValidIndex;
             });
 
-            setCtrlCount(0);
+            
         }
 
        

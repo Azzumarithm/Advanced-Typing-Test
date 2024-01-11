@@ -43,8 +43,10 @@
 }
 
 .input-word-field{
-  opacity: 0;
-  z-index: -999;
+  opacity: 100;
+  z-index: 0;
+  /* opacity: 0;
+  z-index: -999; */
   position: absolute;
 }
 
@@ -122,6 +124,11 @@
   background: transparent;
   bottom: 0;
   
+}
+
+.content{
+  display: flex;
+  justify-content: center;
 }
 
 .content-box{
