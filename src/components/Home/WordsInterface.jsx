@@ -15,49 +15,124 @@ const WordsInterface = () => {
         inputFieldRef.current.focus()
     }
     
+    const [ctrlPressed,setCtrlPressed] = useState(false)
+    const [ctrlTimer, setCtrlTimer] = useState(null)
+    const [testTimer, setTestTimer] = useState(null);
+    const [commaPeriodIndexOccurrence, setCommaPeriodIndexOccurrence] = useState(new Set())
+    const [commaPeriodIndexOccArray, setCommaPeriodIndexOccArray] = useState([])
+    const [diffCommaPeriodOcc, setDiffCommaPeriodOcc] = useState(0)
+    
     // typing
     let characters = paragraphs[randIndex]
     let charactersLength = characters.length
     let inputValue = ''
     let typedChar = characters[charIndex]
 
-    let charArray = inputVal.split(/(\s+|,\s*|\.\s*)/).filter(s => s != " ").filter(s => s != '')
+    // let charArray = inputVal.split(/(\s+|,\s*|\.\s*)/).filter(s => s != " ").filter(s => s != '')
+    const [charArray, setCharArray] = useState([])
+    const [lastWord,setLastWord] = useState('')
+    const [currentStringGapIndex,setCurrentStringGapIndex] = useState(0)
+   
     
-    let lastWord = charArray[charArray.length - 1];
-    
-    
-
-    const [ctrlPressed,setCtrlPressed] = useState(false)
-    const [ctrlTimer, setCtrlTimer] = useState(null)
-    const [ctrlCount, setCtrlCount] = useState(0)
-    const [testTimer, setTestTimer] = useState(null);
-    const [commaPeriodIndex, setCommaPeriodIndex] = useState(0)
-
+    // let currentStringGapIndex = charArray.length - 2
     useEffect(() => {
         inputFieldRef.current.focus();
         // console.log(charactersArray)
     }, []);
+
+    useEffect(() => {
+
+        setLastWord(charArray[charArray.length - 1])
+        // console.log({lastWord})
+    },[charArray])
+    
+    useEffect(() => {
+        if (lastWord === '.' || lastWord === ","){
+            setCommaPeriodIndexOccurrence((prevState) => {
+                const newSetCommaPeriodIndexOccurrence = new Set(prevState);
+                newSetCommaPeriodIndexOccurrence.add(charArray.length);
+                return newSetCommaPeriodIndexOccurrence;
+            });
+        }
+
+        // console.log({lastWord})
+        // console.log(lastWord?.length)
+    },[lastWord])
+    
+    
+    useEffect(() => {
+        setCharArray([...inputVal.split(/(\s+|,\s*|\.\s*)/).filter(s => s != " ").filter(s => s != '')])
+        
+        // console.log({currentStringGapIndex})
+        
+    }, [inputVal]);
+
+    useEffect(() => {
+        setCommaPeriodIndexOccArray(Array.from(commaPeriodIndexOccurrence));
+    }, [commaPeriodIndexOccurrence]);
     
     useEffect(() => {
         
-        if (lastWord === '.' || lastWord === ","){
-            setCommaPeriodIndex(charArray.length)
-        }
-        
-        if (commaPeriodIndex - charArray.length == 2){
-            charArray[charArray.length - 1] = charArray[charArray.length - 1] + " "
-            lastWord = charArray[charArray.length - 1]
+        if (commaPeriodIndexOccArray.length >= 2) {
+            setDiffCommaPeriodOcc(commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 1] - commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2]);
+
+            console.log(commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2],charArray.length,commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2] !== charArray.length)
+
+            setCurrentStringGapIndex(charArray.length - 2)
+            // setCurrentStringGapIndex(charArray.length - 2)
+            // if (commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2] !== charArray.length){
+            //     if (charArray.length === diffCommaPeriodOcc){
+            //         setCurrentStringGapIndex(charArray.length - 1)
+            //     }
+            //     else{
+            //         setCurrentStringGapIndex(charArray.length - 2)
+            //     }
+            // }
+            // else {
+                
+            //     if(charArray.length > 2){
+            //         setCurrentStringGapIndex(commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2] - commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 3])
+            //     }
+            //     else {
+            //         setCurrentStringGapIndex(commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 1] - commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2])
+            //     }
+            // }
         }
 
-        console.log({charArray});
-        console.log({lastWord})
-        console.log(lastWord?.length)
-        console.log(typedChar)
+    }, [commaPeriodIndexOccArray]);
 
-    }, [inputVal]);
+    useEffect(() => {  
+
+        // console.log({ currentStringGapIndex })
+
+        // console.log(commaPeriodIndexOccArray[commaPeriodIndexOccArray?.length - 2])
+
+        // console.log(currentStringGapIndex - commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2])
+
+        // console.log({ diffCommaPeriodOcc })
+
+        console.log((currentStringGapIndex - commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2] < diffCommaPeriodOcc) && currentStringGapIndex - commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2] !== 0)
+
+        if (commaPeriodIndexOccArray.length >= 2){
+            for (let i = currentStringGapIndex; i > commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2]; i--){
+                if((currentStringGapIndex - commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2] < diffCommaPeriodOcc) && currentStringGapIndex - commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2] !== 0){
+                    setCharArray(charArray => {
+                        const newArray = [...charArray]
+                        // if(newArray[i - 1] !== undefined){
+                        //     newArray[i - 1] = `${newArray[i - 1]} `
+                        // }
+                        newArray[i - 1] = `${newArray[i - 1]} `
+                        console.log(i - 1)
+                        console.log(`${newArray[i - 1]} `)
+                        return newArray
+                    })
+                }
+            }
+        }
+
+    },[diffCommaPeriodOcc,inputVal])
     
-    
-    
+
     const spanContainerRef = useRef(null)
     const aSpan = spanContainerRef?.current?.children?.[charIndex]
     
@@ -85,10 +160,11 @@ const WordsInterface = () => {
 
         if (charIndex < charactersLength && timeLeft > 0) {
             if (!isTyping) {
+
                 setIsTyping(true)
 
-
                 const newIntervalId = setInterval(() => {
+
                     setTimeLeft((prevState) => {
                         if (prevState > 0) {
 
@@ -170,7 +246,7 @@ const WordsInterface = () => {
         const isEnter = e.key === 'Enter'
         const isShift = e.shiftKey
 
-        setInputVal(e.target.value)
+        
     
         if (isCtrlKey) {
 
@@ -181,30 +257,39 @@ const WordsInterface = () => {
                 }, 70));
             }
         }
+
     
-        let lastWordLength 
+        let lastWordLength = lastWord?.length - 1
 
-        if (commaPeriodIndex - charArray.length == 2){
-            lastWordLength = lastWord?.length
-        }
-        else {
-            lastWordLength = lastWord?.length - 1
-
-        }
+        // if ((currentStringGapIndex - commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2] < diffCommaPeriodOcc) && currentStringGapIndex - commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2] !== 0){
+        //     lastWordLength = lastWord?.length
+        // }
+        // else {
+        //     lastWordLength = lastWord?.length - 1
+        // }
 
         
         if ((isCtrlKey && backSpace)) {
-            
-            console.log(isCtrlKey && backSpace)
+
+            // if (lastWord === '.' || lastWord === ','){
+            //     setCommaPeriodIndexOccArray((prevState) => {
+            //         const newCommaPeriodIndexOccArray = [...prevState]
+            //         newCommaPeriodIndexOccArray.pop()
+            //         return newCommaPeriodIndexOccArray
+            //     })
+
+            //     // setDiffCommaPeriodOcc(commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 1] - (commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2] || 0));
+            // }
 
             
 
-            
             setCharIndex((preCharIndex) => preCharIndex - lastWordLength);
             
             if (mistakes > 0) {
                 setMistakes((prevState) => prevState - lastWordLength);
             }
+
+            
 
             setValidIndex((prevState) => {
                 const newValidIndex = [...prevState];
@@ -213,11 +298,8 @@ const WordsInterface = () => {
                 }
                 return newValidIndex;
             });
-
-            
         }
 
-       
         if ((isShift || isEnter)){
             setCharIndex(0)
             setValidIndex([])
@@ -226,7 +308,7 @@ const WordsInterface = () => {
             setIsTyping(false)
             setTimeLeft(maxTime)
             
-
+            e.target.value = ''
             clearInterval(testTimer)
             setTestTimer(null)
         }
@@ -236,7 +318,6 @@ const WordsInterface = () => {
     const handleKeyUp = (e) => {
         if (e.key === 'Control') {
             setCtrlPressed(false);
-
             clearTimeout(ctrlTimer);
             setCtrlTimer(0)
         }
@@ -260,6 +341,7 @@ const WordsInterface = () => {
         setTimeLeft(maxTime)
         clearInterval(testTimer)
         setTestTimer(null)
+        e.target.value = ''
     }
 
 
