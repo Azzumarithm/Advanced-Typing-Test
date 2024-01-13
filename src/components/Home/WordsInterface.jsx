@@ -21,7 +21,9 @@ const WordsInterface = () => {
     const [testTimer, setTestTimer] = useState(null);
     const [commaPeriodIndexOccurrence, setCommaPeriodIndexOccurrence] = useState(new Set())
     const [commaPeriodIndexOccArray, setCommaPeriodIndexOccArray] = useState([])
+    const [trackCommaPeriodIndexOcc, setTrackCommaPeriodIndexOcc] = useState([])
     const [diffCommaPeriodOcc, setDiffCommaPeriodOcc] = useState(0)
+    const [offSetCommaPeriodOccArray, setOffSetCommaPeriodOccArray] = useState(0)
     
     // typing
     let characters = paragraphs[randIndex]
@@ -31,7 +33,8 @@ const WordsInterface = () => {
 
     // let charArray = inputVal.split(/(\s+|,\s*|\.\s*)/).filter(s => s != " ").filter(s => s != '')
     const [charArray, setCharArray] = useState([])
-    const [lastWord,setLastWord] = useState('')
+    const [lastWord,setLastWord] = useState()
+    // const [modifiedLastWord,setModifiedLastWord] = useState('')
     const [currentStringGapIndex,setCurrentStringGapIndex] = useState(0)
    
     
@@ -42,9 +45,8 @@ const WordsInterface = () => {
     }, []);
 
     useEffect(() => {
-
         setLastWord(charArray[charArray.length - 1])
-        // console.log({lastWord})
+        
     },[charArray])
     
     useEffect(() => {
@@ -56,49 +58,70 @@ const WordsInterface = () => {
             });
         }
 
-        // console.log({lastWord})
-        // console.log(lastWord?.length)
     },[lastWord])
     
-    
-    
-    useEffect(() => {
-        setCharArray([...inputVal.split(/(\s+|,\s*|\.\s*)/).filter(s => s != " ").filter(s => s != '')])
-        
-        // console.log({currentStringGapIndex})
-        
-    }, [inputVal]);
 
     useEffect(() => {
+        setCharArray([...inputVal.split(/(\s+|,\s*|\.\s*)/).filter(s => s != " ").filter(s => s != '')])
+     
+        
+    }, [inputVal]);
+    
+    useEffect(() => {
         setCommaPeriodIndexOccArray(Array.from(commaPeriodIndexOccurrence));
+        
     }, [commaPeriodIndexOccurrence]);
+
+    useEffect(() => {
+        setTrackCommaPeriodIndexOcc(commaPeriodIndexOccArray)
+    }, [commaPeriodIndexOccArray]);
     
     useEffect(() => {
         
+
         if (commaPeriodIndexOccArray.length >= 2) {
             setDiffCommaPeriodOcc(commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 1] - commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2]);
 
-            console.log(commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2],charArray.length,commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2] !== charArray.length)
-
-            setCurrentStringGapIndex(charArray.length - 2)
+            setOffSetCommaPeriodOccArray(prevState=> prevState + 1)
         }
 
+
+
     }, [commaPeriodIndexOccArray]);
+
+    useEffect(() => {
+
+        // if (commaPeriodIndexOccArray?.length > trackCommaPeriodIndexOcc.length && commaPeriodIndexOccArray.length >= 2){
+        //     setOffSetCommaPeriodOccArray(prevState => prevState - 1)
+        // }
+
+        if (commaPeriodIndexOccArray?.length - trackCommaPeriodIndexOcc.length == 2 && trackCommaPeriodIndexOcc.length >= 2){
+            setOffSetCommaPeriodOccArray(prevState => prevState - 1)
+        }
+        
+        
+    }, [trackCommaPeriodIndexOcc]);
 
     useEffect(() => {  
 
         if (commaPeriodIndexOccArray.length >= 2){
-            if (charArray.length <= commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 1] - 2 && charArray.length > commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2]) {
-                console.log('test')
-                setLastWord(`${charArray[charArray.length - 1]} `)
+
+            if (charArray.length === 1){
+                setLastWord(`${charArray[charArray.length - 1]}`)
+            }
+            else if (charArray.length < commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 1] - 1) {
+
+                // let modifiedLastWord = lastWord?.trim()
+
+                if(lastWord !== '.' || lastWord !== ','){
+                    setLastWord(`${charArray[charArray.length - 1]} `)
+                }
+
+                
             }
         }
+        
 
-    },[commaPeriodIndexOccArray,charArray])
-
-    useEffect(() => {
-        console.log({lastWord})
-        console.log(lastWord?.length)
     },[lastWord])
 
     useEffect(() => {
@@ -231,26 +254,42 @@ const WordsInterface = () => {
             }
         }
 
-    
-        let lastWordLength = lastWord?.length - 1
 
-        
+    
+        let lastWordLength 
+
+        if (lastWord === '.  ' || lastWord === ',  '){
+            lastWordLength = lastWord?.length - 2
+        }
+        else {
+            lastWordLength = lastWord?.length - 1
+        }
+
+        // const popElementFromTrackCommaPeriodIndexOcc = () => {
+        //     setTrackCommaPeriodIndexOcc([...commaPeriodIndexOccArray].pop());
+            
+        //     // setCommaPeriodIndexOccArray((prevState) => {
+        //     //     const newCommaPeriodIndexOccArray = [...prevState];
+        //     //     newCommaPeriodIndexOccArray.pop();
+        //     //     return newCommaPeriodIndexOccArray;
+        //     // });
+        // };
+
+        let modifiedLastWord = lastWord?.trim()
 
         
         if ((isCtrlKey && backSpace)) {
 
             setCtrlBackspacePressed(true)
 
-            // if (lastWord === '.' || lastWord === ','){
-            //     if (commaPeriodIndexOccArray.length % 2 !== 0){
-            //         setCommaPeriodIndexOccArray((prevState) => {
-            //             const newCommaPeriodIndexOccArray = [...prevState]
-            //             newCommaPeriodIndexOccArray.pop()
-            //             return newCommaPeriodIndexOccArray
-            //         })
-    
-            //     }
-            // }
+
+            if (modifiedLastWord === '.' || modifiedLastWord === ','){
+                setTrackCommaPeriodIndexOcc(prevState=> {
+                    const newTrackCommaPeriodIndexOcc = [...prevState]
+                    newTrackCommaPeriodIndexOcc.pop()
+                    return newTrackCommaPeriodIndexOcc
+                });
+            }
 
             setCharIndex((preCharIndex) => preCharIndex - lastWordLength);
             
