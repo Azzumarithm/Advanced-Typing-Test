@@ -16,6 +16,7 @@ const WordsInterface = () => {
     }
     
     const [ctrlPressed,setCtrlPressed] = useState(false)
+    const [ctrlBackspacePressed,setCtrlBackspacePressed] = useState(false)
     const [ctrlTimer, setCtrlTimer] = useState(null)
     const [testTimer, setTestTimer] = useState(null);
     const [commaPeriodIndexOccurrence, setCommaPeriodIndexOccurrence] = useState(new Set())
@@ -60,6 +61,7 @@ const WordsInterface = () => {
     },[lastWord])
     
     
+    
     useEffect(() => {
         setCharArray([...inputVal.split(/(\s+|,\s*|\.\s*)/).filter(s => s != " ").filter(s => s != '')])
         
@@ -79,58 +81,29 @@ const WordsInterface = () => {
             console.log(commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2],charArray.length,commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2] !== charArray.length)
 
             setCurrentStringGapIndex(charArray.length - 2)
-            // setCurrentStringGapIndex(charArray.length - 2)
-            // if (commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2] !== charArray.length){
-            //     if (charArray.length === diffCommaPeriodOcc){
-            //         setCurrentStringGapIndex(charArray.length - 1)
-            //     }
-            //     else{
-            //         setCurrentStringGapIndex(charArray.length - 2)
-            //     }
-            // }
-            // else {
-                
-            //     if(charArray.length > 2){
-            //         setCurrentStringGapIndex(commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2] - commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 3])
-            //     }
-            //     else {
-            //         setCurrentStringGapIndex(commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 1] - commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2])
-            //     }
-            // }
         }
 
     }, [commaPeriodIndexOccArray]);
 
     useEffect(() => {  
 
-        // console.log({ currentStringGapIndex })
-
-        // console.log(commaPeriodIndexOccArray[commaPeriodIndexOccArray?.length - 2])
-
-        // console.log(currentStringGapIndex - commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2])
-
-        // console.log({ diffCommaPeriodOcc })
-
-        console.log((currentStringGapIndex - commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2] < diffCommaPeriodOcc) && currentStringGapIndex - commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2] !== 0)
-
         if (commaPeriodIndexOccArray.length >= 2){
-            for (let i = currentStringGapIndex; i > commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2]; i--){
-                if((currentStringGapIndex - commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2] < diffCommaPeriodOcc) && currentStringGapIndex - commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2] !== 0){
-                    setCharArray(charArray => {
-                        const newArray = [...charArray]
-                        // if(newArray[i - 1] !== undefined){
-                        //     newArray[i - 1] = `${newArray[i - 1]} `
-                        // }
-                        newArray[i - 1] = `${newArray[i - 1]} `
-                        console.log(i - 1)
-                        console.log(`${newArray[i - 1]} `)
-                        return newArray
-                    })
-                }
+            if (charArray.length <= commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 1] - 2 && charArray.length > commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2]) {
+                console.log('test')
+                setLastWord(`${charArray[charArray.length - 1]} `)
             }
         }
 
-    },[diffCommaPeriodOcc,inputVal])
+    },[commaPeriodIndexOccArray,charArray])
+
+    useEffect(() => {
+        console.log({lastWord})
+        console.log(lastWord?.length)
+    },[lastWord])
+
+    useEffect(() => {
+
+    },[ctrlBackspacePressed])
     
 
     const spanContainerRef = useRef(null)
@@ -261,27 +234,23 @@ const WordsInterface = () => {
     
         let lastWordLength = lastWord?.length - 1
 
-        // if ((currentStringGapIndex - commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2] < diffCommaPeriodOcc) && currentStringGapIndex - commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2] !== 0){
-        //     lastWordLength = lastWord?.length
-        // }
-        // else {
-        //     lastWordLength = lastWord?.length - 1
-        // }
+        
 
         
         if ((isCtrlKey && backSpace)) {
 
+            setCtrlBackspacePressed(true)
+
             // if (lastWord === '.' || lastWord === ','){
-            //     setCommaPeriodIndexOccArray((prevState) => {
-            //         const newCommaPeriodIndexOccArray = [...prevState]
-            //         newCommaPeriodIndexOccArray.pop()
-            //         return newCommaPeriodIndexOccArray
-            //     })
-
-            //     // setDiffCommaPeriodOcc(commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 1] - (commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2] || 0));
+            //     if (commaPeriodIndexOccArray.length % 2 !== 0){
+            //         setCommaPeriodIndexOccArray((prevState) => {
+            //             const newCommaPeriodIndexOccArray = [...prevState]
+            //             newCommaPeriodIndexOccArray.pop()
+            //             return newCommaPeriodIndexOccArray
+            //         })
+    
+            //     }
             // }
-
-            
 
             setCharIndex((preCharIndex) => preCharIndex - lastWordLength);
             
@@ -289,8 +258,7 @@ const WordsInterface = () => {
                 setMistakes((prevState) => prevState - lastWordLength);
             }
 
-            
-
+    
             setValidIndex((prevState) => {
                 const newValidIndex = [...prevState];
                 for (let i = 0; i < lastWordLength; i++) {
@@ -320,6 +288,10 @@ const WordsInterface = () => {
             setCtrlPressed(false);
             clearTimeout(ctrlTimer);
             setCtrlTimer(0)
+        }
+
+        if (e.key === 'Control' && e.key === 'Backspace'){
+            setCtrlBackspacePressed(false)
         }
     };
 
