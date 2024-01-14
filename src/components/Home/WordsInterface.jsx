@@ -31,31 +31,25 @@ const WordsInterface = () => {
     let inputValue = ''
     let typedChar = characters[charIndex]
 
-    // let charArray = inputVal.split(/(\s+|,\s*|\.\s*)/).filter(s => s != " ").filter(s => s != '')
     const [charArray, setCharArray] = useState([])
     const [lastWord,setLastWord] = useState()
-    // const [modifiedLastWord,setModifiedLastWord] = useState('')
-    const [currentStringGapIndex,setCurrentStringGapIndex] = useState(0)
-   
     
-    // let currentStringGapIndex = charArray.length - 2
+   
     useEffect(() => {
         inputFieldRef.current.focus();
         // console.log(charactersArray)
     }, []);
     
     useEffect(() => {
-        setCharArray([...inputVal.split(/(\s+|,|\.\s*)/).filter(s => s != " ").filter(s => s != '').map((s, index, array) => (index === array.length - 1) ? s : (s === '. ' || s === ', ') ? s : s + " ")])
-    
-        console.log(inputVal[charIndex - 1])
+        setCharArray([...inputVal.split(/(\s+|,|\.)/).filter(s => s != " ").filter(s => s != '').map((s, index, array) => (index === array.length - 1) ? s : (s === '.' || s === ',') ? s : s + " ")])
+
         console.log(characters[charIndex - 1])
-        console.log(inputVal[charIndex - 2])
         console.log(characters[charIndex - 2])
     }, [inputVal]);
     
     useEffect(() => {
         
-        setLastWord(`${charArray[charArray.length - 1]}`)
+        setLastWord(charArray[charArray.length - 1])
         
     },[charArray])
     
@@ -108,24 +102,10 @@ const WordsInterface = () => {
 
     useEffect(() => {  
 
-        if (commaPeriodIndexOccArray.length >= 2){
-
-            if (charArray.length === 1){
-                setLastWord(`${charArray[charArray.length - 1]}`)
-            }
-            else if (charArray.length < commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 1] - 1 && charArray.length > commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2]) {
-
-                // let modifiedLastWord = lastWord?.trim()
-
-                if(lastWord !== '.' || lastWord !== ','){
-                    setLastWord(`${charArray[charArray.length - 1]} `)
-                }
-
-                
-            }
+        if (charArray.length === 1){
+            setLastWord(`${charArray[charArray.length - 1]}`)
         }
         
-
     },[lastWord])
 
     useEffect(() => {
@@ -261,7 +241,7 @@ const WordsInterface = () => {
         let lastWordLength 
         // let lastWordLength = lastWord?.length - 1
 
-        if (characters[charIndex - 1] === ' ' && inputVal[charIndex - 1] === ' ' && (characters[charIndex - 2] !== ',' || characters[charIndex - 2] !== '.' && inputVal[charIndex - 2] !== ',' || inputVal[charIndex - 2] !== '.')){
+        if (characters[charIndex - 1] === ' ' && inputVal[charIndex - 1] === ' ' && (characters[charIndex - 2] !== ',' || characters[charIndex - 2] !== '.')){
             lastWordLength = lastWord?.length 
         }
         else{
@@ -269,33 +249,9 @@ const WordsInterface = () => {
         }
         
         
-        
-
-        // const popElementFromTrackCommaPeriodIndexOcc = () => {
-        //     setTrackCommaPeriodIndexOcc([...commaPeriodIndexOccArray].pop());
-            
-        //     // setCommaPeriodIndexOccArray((prevState) => {
-        //     //     const newCommaPeriodIndexOccArray = [...prevState];
-        //     //     newCommaPeriodIndexOccArray.pop();
-        //     //     return newCommaPeriodIndexOccArray;
-        //     // });
-        // };
-
-        let modifiedLastWord = lastWord?.trim()
-
-        
         if ((isCtrlKey && backSpace)) {
 
             setCtrlBackspacePressed(true)
-
-
-            if (modifiedLastWord === '.' || modifiedLastWord === ','){
-                setTrackCommaPeriodIndexOcc(prevState=> {
-                    const newTrackCommaPeriodIndexOcc = [...prevState]
-                    newTrackCommaPeriodIndexOcc.pop()
-                    return newTrackCommaPeriodIndexOcc
-                });
-            }
 
             setCharIndex((preCharIndex) => preCharIndex - lastWordLength);
             
@@ -314,16 +270,7 @@ const WordsInterface = () => {
         }
 
         if ((isShift || isEnter)){
-            setCharIndex(0)
-            setValidIndex([])
-            setMistakes(0)
-            setInputVal('')
-            setIsTyping(false)
-            setTimeLeft(maxTime)
-            
-            e.target.value = ''
-            clearInterval(testTimer)
-            setTestTimer(null)
+            window.location.reload()
         }
     };
     
@@ -334,7 +281,6 @@ const WordsInterface = () => {
             clearTimeout(ctrlTimer);
             setCtrlTimer(0)
         }
-
         if (e.key === 'Control' && e.key === 'Backspace'){
             setCtrlBackspacePressed(false)
         }
@@ -350,15 +296,8 @@ const WordsInterface = () => {
 
 
     const handleResetTypingTest = (e) => {
-        setCharIndex(0)
-        setValidIndex([])
-        setMistakes(0)
-        setInputVal('')
-        setIsTyping(false)
-        setTimeLeft(maxTime)
-        clearInterval(testTimer)
-        setTestTimer(null)
-        e.target.value = ''
+
+        window.location.reload()
     }
 
 
