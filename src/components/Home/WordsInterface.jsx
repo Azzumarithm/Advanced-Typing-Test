@@ -43,9 +43,19 @@ const WordsInterface = () => {
         inputFieldRef.current.focus();
         // console.log(charactersArray)
     }, []);
-
+    
     useEffect(() => {
-        setLastWord(charArray[charArray.length - 1])
+        setCharArray([...inputVal.split(/(\s+|,|\.\s*)/).filter(s => s != " ").filter(s => s != '').map((s, index, array) => (index === array.length - 1) ? s : (s === '. ' || s === ', ') ? s : s + " ")])
+    
+        console.log(inputVal[charIndex - 1])
+        console.log(characters[charIndex - 1])
+        console.log(inputVal[charIndex - 2])
+        console.log(characters[charIndex - 2])
+    }, [inputVal]);
+    
+    useEffect(() => {
+        
+        setLastWord(`${charArray[charArray.length - 1]}`)
         
     },[charArray])
     
@@ -61,12 +71,6 @@ const WordsInterface = () => {
     },[lastWord])
     
 
-    useEffect(() => {
-        setCharArray([...inputVal.split(/(\s+|,\s*|\.\s*)/).filter(s => s != " ").filter(s => s != '')])
-     
-        
-    }, [inputVal]);
-    
     useEffect(() => {
         setCommaPeriodIndexOccArray(Array.from(commaPeriodIndexOccurrence));
         
@@ -109,7 +113,7 @@ const WordsInterface = () => {
             if (charArray.length === 1){
                 setLastWord(`${charArray[charArray.length - 1]}`)
             }
-            else if (charArray.length < commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 1] - 1) {
+            else if (charArray.length < commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 1] - 1 && charArray.length > commaPeriodIndexOccArray[commaPeriodIndexOccArray.length - 2]) {
 
                 // let modifiedLastWord = lastWord?.trim()
 
@@ -254,16 +258,18 @@ const WordsInterface = () => {
             }
         }
 
-
-    
         let lastWordLength 
+        // let lastWordLength = lastWord?.length - 1
 
-        if (lastWord === '.  ' || lastWord === ',  '){
-            lastWordLength = lastWord?.length - 2
+        if (characters[charIndex - 1] === ' ' && inputVal[charIndex - 1] === ' ' && (characters[charIndex - 2] !== ',' || characters[charIndex - 2] !== '.' && inputVal[charIndex - 2] !== ',' || inputVal[charIndex - 2] !== '.')){
+            lastWordLength = lastWord?.length 
         }
-        else {
+        else{
             lastWordLength = lastWord?.length - 1
         }
+        
+        
+        
 
         // const popElementFromTrackCommaPeriodIndexOcc = () => {
         //     setTrackCommaPeriodIndexOcc([...commaPeriodIndexOccArray].pop());
