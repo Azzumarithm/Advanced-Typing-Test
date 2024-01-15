@@ -43,10 +43,10 @@
 }
 
 .input-word-field{
-  opacity: 100;
-  z-index: 1;
-  /* opacity: 0;
-  z-index: -999; */
+  /* opacity: 100;
+  z-index: 1; */
+  opacity: 0;
+  z-index: -999;
   position: absolute;
 }
 
@@ -100,7 +100,6 @@
   border-radius: 5px;
   background: #00ff73;
   animation: blink 2s ease-in-out infinite;
-  
 }
 
 .content-box {
@@ -126,10 +125,10 @@
   
 }
 
-.content{
+/* .content{
   display: flex;
   justify-content: center;
-}
+} */
 
 .content-box{
   align-items: center;

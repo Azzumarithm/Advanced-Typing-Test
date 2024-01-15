@@ -41,7 +41,7 @@ const WordsInterface = () => {
     }, []);
     
     useEffect(() => {
-        setCharArray([...inputVal.split(/(\s+|,|\.)/).filter(s => s != " ").filter(s => s != '').map((s, index, array) => (index === array.length - 1) ? s : (s === '.' || s === ',') ? s : s + " ")])
+        setCharArray([...inputVal.split(/(\s+|,|\.|[^a-zA-Z])/).filter(s => s != " ").filter(s => s != '').map((s, index, array) => (index === array.length - 1) ? s : (s === '.' || s === ',') ? s : s + " ")])
 
         console.log(characters[charIndex - 1])
         console.log(characters[charIndex - 2])
@@ -88,11 +88,7 @@ const WordsInterface = () => {
     }, [commaPeriodIndexOccArray]);
 
     useEffect(() => {
-
-        // if (commaPeriodIndexOccArray?.length > trackCommaPeriodIndexOcc.length && commaPeriodIndexOccArray.length >= 2){
-        //     setOffSetCommaPeriodOccArray(prevState => prevState - 1)
-        // }
-
+        
         if (commaPeriodIndexOccArray?.length - trackCommaPeriodIndexOcc.length == 2 && trackCommaPeriodIndexOcc.length >= 2){
             setOffSetCommaPeriodOccArray(prevState => prevState - 1)
         }
