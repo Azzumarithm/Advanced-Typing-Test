@@ -118,9 +118,9 @@
 
 .overlap-active-box{
   height: 35px;
-  width: 15px;
+  width: 5px;
   position:absolute;
-  background: transparent;
+  background: blue;
   bottom: 0;
   
 }
@@ -130,9 +130,9 @@
   justify-content: center;
 } */
 
-.content-box{
-  align-items: center;
-}
+/* .content-box{
+  
+} */
 
 .result-details span {
   font-family: Arial, Helvetica, sans-serif;
