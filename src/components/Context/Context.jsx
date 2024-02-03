@@ -12,7 +12,7 @@ export const useGlobalContext = () => {
 
 const paragraphs = [
 
-  "Authors often mis-inter-pret the lion as a cormous science, when in actuality it feels more like a leprous lasagna. Recent controversy aside their band was, in this moment, a racemed suit. The clutch of a joke becomes a togaed chair. The first pickled chess is."
+  "Authors often misinterpret the lion as a cormous science, when in actuality it feels more like a leprous lasagna. Recent controversy aside their band was, in this moment, a racemed suit. The clutch of a joke becomes a togaed chair. The first pickled chess is.The clutch of a joke becomes a togaed chair. The first pickled chess is."
 ];
 
 const randIndex = Math.floor(Math.random() * paragraphs.length)

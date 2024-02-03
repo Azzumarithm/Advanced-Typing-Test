@@ -28,7 +28,7 @@
 }
 
 .words-interface{
-  width: 700px;
+  width: 1000px;
   padding: 10px;
 }
 
@@ -50,14 +50,23 @@
   position: absolute;
 }
 
+.typing-text-cover{
+  position: absolute;
+  background: transparent;
+  width: 100%;
+  height: 87%;
+  z-index: 2;
+}
+
 .typing-text p {
   font-size: 21px;
   text-align: justify;
   letter-spacing: 1px;
   word-break: break-all;
 }
-
+x
 .typing-text {
+  /* height: 300px; */
   background-color: transparent; 
   /* padding: 0px 0px 0px 10px;x */
   
@@ -65,7 +74,7 @@
 
 .typing-text span{
   color: white;
-  font-size: 28px;
+  font-size: 38px;
   width: 0px;
   /* height: px; */
   position: relative;
@@ -109,7 +118,7 @@
 
 .content-box .typing-text {
   overflow: scroll;
-  height: 106px;
+  height: 146px;
 }
 
 .typing-text::-webkit-scrollbar{
@@ -120,7 +129,7 @@
   height: 35px;
   width: 5px;
   position:absolute;
-  background: blue;
+  background: transparent;
   bottom: 0;
   
 }
@@ -136,7 +145,7 @@
 
 .result-details span {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 20px;
+  font-size: 28px;
 }
 
 .reload {
